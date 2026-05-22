@@ -56,7 +56,6 @@ export function ReserveModal({ product, stockLevel, onClose }: ReserveModalProps
       }
 
       addToast("Reservation created! Redirecting to checkout...", "success");
-      // Store reservation data for the checkout page
       sessionStorage.setItem(
         `reservation-${data.reservation.id}`,
         JSON.stringify(data.reservation)
@@ -71,13 +70,13 @@ export function ReserveModal({ product, stockLevel, onClose }: ReserveModalProps
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-bold text-[var(--foreground)]">Hold Inventory</h2>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl font-bold text-white tracking-tight">Secure Inventory</h2>
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+            className="p-2 rounded-full text-[var(--muted-foreground)] hover:bg-white/10 hover:text-white transition-all"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
@@ -86,38 +85,38 @@ export function ReserveModal({ product, stockLevel, onClose }: ReserveModalProps
 
         <div className="space-y-6">
           {/* Product Summary Box */}
-          <div className="bg-[var(--muted)] rounded-lg p-4 border border-[var(--border)]">
-            <div className="flex justify-between items-start mb-2">
+          <div className="bg-black/30 rounded-xl p-5 border border-white/5 shadow-inner">
+            <div className="flex justify-between items-start mb-3">
               <div>
-                <p className="font-semibold text-sm text-[var(--foreground)]">{product.name}</p>
-                <p className="text-xs text-[var(--muted-foreground)] font-mono mt-0.5">{product.sku}</p>
+                <p className="font-bold text-base text-white">{product.name}</p>
+                <p className="text-xs text-[var(--primary)] font-mono mt-1 px-1.5 py-0.5 bg-[var(--primary)]/10 rounded inline-block">{product.sku}</p>
               </div>
-              <p className="font-medium text-sm">₹{product.price.toLocaleString("en-IN")}</p>
+              <p className="font-bold text-lg text-white">₹{product.price.toLocaleString("en-IN")}</p>
             </div>
-            <div className="pt-3 mt-3 border-t border-[var(--border)] flex justify-between items-center text-sm">
-              <span className="text-[var(--muted-foreground)] flex items-center gap-1.5">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="pt-4 mt-2 border-t border-white/10 flex justify-between items-center text-sm">
+              <span className="text-[var(--muted-foreground)] flex items-center gap-2 font-medium">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"></path>
                   <circle cx="12" cy="10" r="3"></circle>
                 </svg>
                 {stockLevel.warehouseName}
               </span>
-              <span className="badge badge-success bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm">
-                {stockLevel.availableUnits} left
+              <span className="badge badge-success shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                {stockLevel.availableUnits} units available
               </span>
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-5">
             {/* Quantity */}
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-[var(--foreground)]">
-                Quantity
+              <label className="block text-sm font-semibold mb-2 text-white/90 uppercase tracking-wider text-[11px]">
+                Select Quantity
               </label>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="btn btn-outline h-10 w-10 !p-0 font-bold"
+                  className="btn btn-outline h-12 w-12 !p-0 font-bold text-xl rounded-xl"
                   disabled={quantity <= 1}
                 >
                   −
@@ -135,13 +134,13 @@ export function ReserveModal({ product, stockLevel, onClose }: ReserveModalProps
                       )
                     )
                   }
-                  className="input flex-1 text-center font-medium"
+                  className="input flex-1 text-center font-bold text-lg h-12 rounded-xl"
                 />
                 <button
                   onClick={() =>
                     setQuantity(Math.min(quantity + 1, stockLevel.availableUnits))
                   }
-                  className="btn btn-outline h-10 w-10 !p-0 font-bold"
+                  className="btn btn-outline h-12 w-12 !p-0 font-bold text-xl rounded-xl"
                   disabled={quantity >= stockLevel.availableUnits}
                 >
                   +
@@ -151,44 +150,44 @@ export function ReserveModal({ product, stockLevel, onClose }: ReserveModalProps
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-[var(--foreground)]">
-                Customer Email <span className="font-normal text-[var(--muted-foreground)]">(Optional)</span>
+              <label className="block text-sm font-semibold mb-2 text-white/90 uppercase tracking-wider text-[11px]">
+                Customer Email <span className="font-normal text-[var(--muted-foreground)] normal-case text-xs ml-1">(Optional)</span>
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="customer@example.com"
-                className="input"
+                className="input h-12 rounded-xl"
               />
             </div>
           </div>
 
-          <div className="flex items-start gap-2.5 bg-blue-50 text-blue-800 p-3 rounded-lg border border-blue-100">
-            <svg className="w-5 h-5 flex-shrink-0 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div className="flex items-start gap-3 bg-[var(--primary)]/10 text-indigo-200 p-4 rounded-xl border border-[var(--primary)]/20 shadow-inner">
+            <svg className="w-5 h-5 flex-shrink-0 text-[var(--primary)] mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p className="text-xs leading-relaxed">
-              This inventory will be reserved exclusively for you for <strong>10 minutes</strong>. Other shoppers won't be able to purchase it during this window.
+            <p className="text-xs leading-relaxed font-medium">
+              This inventory will be held exclusively for you for <strong className="text-white">10 minutes</strong>. Other shoppers won't be able to purchase it during this window.
             </p>
           </div>
 
-          <div className="pt-2">
+          <div className="pt-4">
             <button
               onClick={handleReserve}
               disabled={loading || quantity < 1 || quantity > stockLevel.availableUnits}
-              className="btn btn-primary w-full py-3 h-12 shadow-sm text-sm"
+              className="btn btn-primary w-full py-4 h-14 text-base rounded-xl shadow-[0_0_20px_rgba(139,92,246,0.4)]"
             >
               {loading ? (
                 <span className="flex items-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
-                  Reserving...
+                  Securing...
                 </span>
               ) : (
-                `Reserve ${quantity} unit${quantity > 1 ? 's' : ''} • ₹${(product.price * quantity).toLocaleString("en-IN")}`
+                `Hold ${quantity} Unit${quantity > 1 ? 's' : ''} • ₹${(product.price * quantity).toLocaleString("en-IN")}`
               )}
             </button>
           </div>
