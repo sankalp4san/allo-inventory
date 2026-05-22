@@ -1,0 +1,27 @@
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import type { WarehouseResponse } from "@/lib/validators";
+
+export const dynamic = "force-dynamic";
+
+export async function GET() {
+  try {
+    const warehouses = await prisma.warehouse.findMany({
+      orderBy: { name: "asc" },
+    });
+
+    const response: WarehouseResponse[] = warehouses.map((w) => ({
+      id: w.id,
+      name: w.name,
+      location: w.location,
+    }));
+
+    return NextResponse.json({ warehouses: response });
+  } catch (error) {
+    console.error("Error fetching warehouses:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch warehouses" },
+      { status: 500 }
+    );
+  }
+}
