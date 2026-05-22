@@ -92,13 +92,14 @@ function CheckoutContent({ id }: { id: string }) {
 
   if (loading) {
     return (
-      <div className="max-w-2xl mx-auto space-y-6">
-        <div className="h-8 w-48 skeleton" />
-        <div className="glass-card p-8" style={{ transform: 'none' }}>
-          <div className="space-y-4">
+      <div className="max-w-xl mx-auto space-y-6 pt-12">
+        <div className="h-6 w-32 skeleton mb-8" />
+        <div className="clean-card p-8 border border-[var(--border)]">
+          <div className="space-y-6">
             <div className="h-6 w-3/4 skeleton" />
             <div className="h-4 w-1/2 skeleton" />
-            <div className="h-20 skeleton" />
+            <div className="h-px bg-[var(--border)] my-6" />
+            <div className="h-24 skeleton" />
           </div>
         </div>
       </div>
@@ -107,14 +108,16 @@ function CheckoutContent({ id }: { id: string }) {
 
   if (!reservation) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-20">
-        <div className="text-6xl mb-4">🔍</div>
-        <h2 className="text-xl font-semibold mb-2">Reservation not found</h2>
-        <p className="text-[var(--muted-foreground)] mb-6">
-          This reservation may have expired or doesn&apos;t exist.
+      <div className="max-w-xl mx-auto text-center py-24">
+        <svg className="w-16 h-16 text-[var(--muted-foreground)] mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <h2 className="text-xl font-medium mb-2 text-[var(--foreground)]">Reservation Not Found</h2>
+        <p className="text-[var(--muted-foreground)] mb-8">
+          This reservation session may have expired or does not exist.
         </p>
-        <button onClick={() => router.push("/")} className="btn btn-primary">
-          ← Back to Products
+        <button onClick={() => router.push("/")} className="btn btn-primary px-6">
+          Return to Store
         </button>
       </div>
     );
@@ -126,209 +129,164 @@ function CheckoutContent({ id }: { id: string }) {
   const isFinalExpired = reservation.status === "EXPIRED" || isExpired;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      {/* Back button */}
+    <div className="max-w-xl mx-auto py-8 px-4">
       <button
         onClick={() => router.push("/")}
-        className="flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+        className="flex items-center gap-1.5 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors mb-6 font-medium"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
-        Back to Products
+        Back to Store
       </button>
 
-      <h1 className="text-2xl font-bold">Checkout</h1>
-
-      {/* Status badge */}
-      <div className="flex items-center gap-3">
-        <span
-          className={`badge ${
-            isPending ? "badge-warning" :
-            isConfirmed ? "badge-success" :
-            isReleased ? "badge-info" :
-            "badge-danger"
-          }`}
-        >
-          {isPending ? "Pending Payment" :
-           isConfirmed ? "Confirmed" :
-           isReleased ? "Cancelled" :
-           "Expired"}
-        </span>
-        <span className="text-xs text-[var(--muted-foreground)] font-mono">
-          ID: {reservation.id}
-        </span>
-      </div>
-
-      {/* Countdown timer (only for pending) */}
-      {isPending && (
-        <div className="glass-card p-6" style={{ transform: 'none' }}>
-          <CountdownTimer
-            expiresAt={reservation.expiresAt}
-            onExpired={handleExpired}
-          />
+      <div className="clean-card border border-[var(--border)] overflow-hidden">
+        {/* Header */}
+        <div className="bg-[var(--muted)]/50 p-6 border-b border-[var(--border)]">
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-xl font-bold text-[var(--foreground)] mb-1">Checkout</h1>
+              <p className="text-xs text-[var(--muted-foreground)] font-mono">Order #{reservation.id.slice(0, 8).toUpperCase()}</p>
+            </div>
+            <span
+              className={`badge ${
+                isPending ? "badge-warning" :
+                isConfirmed ? "badge-success" :
+                isReleased ? "badge-neutral" :
+                "badge-danger"
+              }`}
+            >
+              {isPending ? "Awaiting Payment" :
+               isConfirmed ? "Confirmed" :
+               isReleased ? "Cancelled" :
+               "Expired"}
+            </span>
+          </div>
         </div>
-      )}
 
-      {/* Reservation details */}
-      <div className="glass-card p-6" style={{ transform: 'none' }}>
-        <h2 className="text-lg font-semibold mb-4">Reservation Details</h2>
+        {/* Timer */}
+        {isPending && (
+          <div className="bg-amber-50 border-b border-amber-100 p-4 flex flex-col items-center justify-center">
+            <p className="text-xs font-medium text-amber-800 uppercase tracking-wide mb-1.5">Reservation Expires In</p>
+            <CountdownTimer
+              expiresAt={reservation.expiresAt}
+              onExpired={handleExpired}
+            />
+          </div>
+        )}
 
-        <div className="space-y-4">
+        {/* Order Details */}
+        <div className="p-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-4">Order Summary</h2>
+
           {reservation.product && (
-            <div className="flex items-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-violet-950/50 text-3xl">
-                {reservation.product.sku?.startsWith('SNK') ? '👟' :
-                 reservation.product.sku?.startsWith('BAG') ? '🎒' :
-                 reservation.product.sku?.startsWith('AUD') ? '🎧' :
-                 reservation.product.sku?.startsWith('TEE') ? '👕' :
-                 reservation.product.sku?.startsWith('BTL') ? '🫗' : '📦'}
+            <div className="flex gap-4 mb-6 pb-6 border-b border-[var(--border)]">
+              <div className="w-16 h-16 bg-[var(--muted)] rounded-md flex items-center justify-center border border-[var(--border)]">
+                {reservation.product.imageUrl ? (
+                  <img src={reservation.product.imageUrl} alt={reservation.product.name} className="object-cover w-full h-full rounded-md" />
+                ) : (
+                  <svg className="w-8 h-8 text-[var(--muted-foreground)] opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                )}
               </div>
-              <div>
-                <h3 className="font-semibold">{reservation.product.name}</h3>
-                <p className="text-sm text-[var(--muted-foreground)] font-mono">
-                  {reservation.product.sku}
-                </p>
+              <div className="flex-1">
+                <h3 className="font-semibold text-[var(--foreground)]">{reservation.product.name}</h3>
+                <p className="text-xs text-[var(--muted-foreground)] font-mono mt-0.5">{reservation.product.sku}</p>
+                <div className="mt-2 text-sm text-[var(--muted-foreground)]">
+                  Qty: <span className="font-medium text-[var(--foreground)]">{reservation.quantity}</span>
+                </div>
+              </div>
+              <div className="font-medium text-[var(--foreground)]">
+                ₹{reservation.product.price?.toLocaleString("en-IN") || "—"}
               </div>
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[var(--border)]">
-            <div>
-              <p className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider mb-1">
-                Warehouse
-              </p>
-              <p className="text-sm font-medium">
-                {reservation.warehouse?.name || reservation.warehouseId}
-              </p>
-              {reservation.warehouse?.location && (
-                <p className="text-xs text-[var(--muted-foreground)]">
-                  {reservation.warehouse.location}
-                </p>
-              )}
+          <div className="space-y-3 text-sm">
+            <div className="flex justify-between">
+              <span className="text-[var(--muted-foreground)]">Subtotal</span>
+              <span className="font-medium">₹{((reservation.product?.price || 0) * reservation.quantity).toLocaleString("en-IN")}</span>
             </div>
-            <div>
-              <p className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider mb-1">
-                Quantity
-              </p>
-              <p className="text-sm font-medium">
-                {reservation.quantity} unit{reservation.quantity > 1 ? "s" : ""}
-              </p>
+            <div className="flex justify-between">
+              <span className="text-[var(--muted-foreground)]">Fulfillment</span>
+              <span className="text-right">
+                <span className="font-medium">{reservation.warehouse?.name || reservation.warehouseId}</span>
+                {reservation.warehouse?.location && (
+                  <span className="block text-xs text-[var(--muted-foreground)]">{reservation.warehouse.location}</span>
+                )}
+              </span>
             </div>
-            <div>
-              <p className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider mb-1">
-                Unit Price
-              </p>
-              <p className="text-sm font-medium">
-                ₹{reservation.product?.price?.toLocaleString("en-IN") || "—"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider mb-1">
-                Total
-              </p>
-              <p className="text-lg font-bold gradient-text">
+            <div className="pt-4 border-t border-[var(--border)] flex justify-between items-center">
+              <span className="font-semibold text-[var(--foreground)]">Total Due</span>
+              <span className="text-2xl font-bold text-[var(--foreground)]">
                 ₹{((reservation.product?.price || 0) * reservation.quantity).toLocaleString("en-IN")}
-              </p>
+              </span>
             </div>
           </div>
+        </div>
 
-          {reservation.customerEmail && (
-            <div className="pt-4 border-t border-[var(--border)]">
-              <p className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider mb-1">
-                Email
-              </p>
-              <p className="text-sm">{reservation.customerEmail}</p>
+        {/* Actions */}
+        {isPending && (
+          <div className="p-6 bg-[var(--muted)]/30 border-t border-[var(--border)]">
+            <button
+              onClick={handleConfirm}
+              disabled={!!actionLoading}
+              className="btn btn-primary w-full py-3 h-12 text-sm shadow-sm mb-3"
+            >
+              {actionLoading === "confirm" ? "Processing Payment..." : "Pay Now to Confirm"}
+            </button>
+            <button
+              onClick={handleRelease}
+              disabled={!!actionLoading}
+              className="btn btn-outline w-full py-2.5 text-sm"
+            >
+              {actionLoading === "release" ? "Cancelling..." : "Cancel Order"}
+            </button>
+          </div>
+        )}
+
+        {/* Post-Action States */}
+        {isConfirmed && (
+          <div className="p-6 bg-emerald-50 border-t border-emerald-100 text-center">
+            <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
             </div>
-          )}
-        </div>
+            <h3 className="text-emerald-800 font-bold mb-1">Payment Successful</h3>
+            <p className="text-emerald-600 text-sm mb-4">Your items have been secured and are ready for fulfillment.</p>
+            <button onClick={() => router.push("/")} className="btn btn-success text-sm px-6">
+              Continue Shopping
+            </button>
+          </div>
+        )}
+
+        {isReleased && (
+          <div className="p-6 bg-[var(--muted)] border-t border-[var(--border)] text-center">
+            <p className="text-[var(--foreground)] font-medium mb-1">Order Cancelled</p>
+            <p className="text-[var(--muted-foreground)] text-sm mb-4">Your reservation has been released.</p>
+            <button onClick={() => router.push("/")} className="btn btn-outline bg-white text-sm px-6">
+              Browse More Products
+            </button>
+          </div>
+        )}
+
+        {isFinalExpired && reservation.status !== "CONFIRMED" && reservation.status !== "RELEASED" && (
+          <div className="p-6 bg-red-50 border-t border-red-100 text-center">
+            <div className="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-red-800 font-bold mb-1">Reservation Expired</h3>
+            <p className="text-red-600 text-sm mb-4">You ran out of time to complete the checkout.</p>
+            <button onClick={() => router.push("/")} className="btn btn-outline bg-white text-sm px-6">
+              Try Again
+            </button>
+          </div>
+        )}
       </div>
-
-      {/* Action buttons (only for pending) */}
-      {isPending && (
-        <div className="flex gap-4">
-          <button
-            onClick={handleRelease}
-            disabled={!!actionLoading}
-            className="btn btn-danger flex-1 py-3"
-          >
-            {actionLoading === "release" ? (
-              <span className="flex items-center gap-2">
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Cancelling...
-              </span>
-            ) : (
-              "Cancel Reservation"
-            )}
-          </button>
-          <button
-            onClick={handleConfirm}
-            disabled={!!actionLoading}
-            className="btn btn-success flex-1 py-3"
-          >
-            {actionLoading === "confirm" ? (
-              <span className="flex items-center gap-2">
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Confirming...
-              </span>
-            ) : (
-              "✓ Confirm Purchase"
-            )}
-          </button>
-        </div>
-      )}
-
-      {/* Final state messages */}
-      {isConfirmed && (
-        <div className="glass-card p-6 text-center border-emerald-800/30" style={{ transform: 'none' }}>
-          <div className="text-5xl mb-3">🎉</div>
-          <h3 className="text-lg font-bold text-emerald-400 mb-2">
-            Purchase Confirmed!
-          </h3>
-          <p className="text-sm text-[var(--muted-foreground)]">
-            Stock has been permanently allocated. Your order is being processed.
-          </p>
-          <button onClick={() => router.push("/")} className="btn btn-primary mt-4">
-            Continue Shopping
-          </button>
-        </div>
-      )}
-
-      {isReleased && (
-        <div className="glass-card p-6 text-center border-violet-800/30" style={{ transform: 'none' }}>
-          <div className="text-5xl mb-3">↩️</div>
-          <h3 className="text-lg font-bold text-violet-400 mb-2">
-            Reservation Cancelled
-          </h3>
-          <p className="text-sm text-[var(--muted-foreground)]">
-            Stock has been released back to the available pool.
-          </p>
-          <button onClick={() => router.push("/")} className="btn btn-primary mt-4">
-            Back to Products
-          </button>
-        </div>
-      )}
-
-      {isFinalExpired && reservation.status !== "CONFIRMED" && reservation.status !== "RELEASED" && (
-        <div className="glass-card p-6 text-center border-red-800/30" style={{ transform: 'none' }}>
-          <div className="text-5xl mb-3">⏰</div>
-          <h3 className="text-lg font-bold text-red-400 mb-2">
-            Reservation Expired
-          </h3>
-          <p className="text-sm text-[var(--muted-foreground)]">
-            The reservation window has ended. Stock has been released.
-          </p>
-          <button onClick={() => router.push("/")} className="btn btn-primary mt-4">
-            Back to Products
-          </button>
-        </div>
-      )}
     </div>
   );
 }

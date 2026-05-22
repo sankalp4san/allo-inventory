@@ -18,69 +18,58 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-      <div className="glass-card overflow-hidden group">
-        {/* Product image area */}
-        <div className="relative h-48 bg-gradient-to-br from-violet-950/50 to-purple-900/30 flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iYSIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIj48cGF0aCBkPSJNMCAwaDQwdjQwSDB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTAgMGg0MHY0MEgweiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDEyNCw1OCwyMzcsMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNhKSIvPjwvc3ZnPg==')] opacity-40"></div>
-          <div className="text-5xl">
-            {product.sku.startsWith('SNK') ? '👟' :
-             product.sku.startsWith('BAG') ? '🎒' :
-             product.sku.startsWith('AUD') ? '🎧' :
-             product.sku.startsWith('TEE') ? '👕' :
-             product.sku.startsWith('BTL') ? '🫗' : '📦'}
-          </div>
-          <div className="absolute top-3 right-3">
-            <span className={`badge ${totalAvailable > 0 ? 'badge-success' : 'badge-danger'}`}>
-              {totalAvailable > 0 ? `${totalAvailable} in stock` : 'Out of stock'}
-            </span>
+      <div className="clean-card clean-card-hover flex flex-col h-full overflow-hidden">
+        {/* Minimalist image placeholder area */}
+        <div className="relative h-48 bg-[var(--muted)] flex items-center justify-center border-b border-[var(--border)]">
+          {product.imageUrl ? (
+            <img src={product.imageUrl} alt={product.name} className="object-cover w-full h-full" />
+          ) : (
+            <svg className="w-12 h-12 text-[var(--muted-foreground)] opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          )}
+          <div className="absolute top-3 left-3">
+            {totalAvailable > 0 ? (
+               <span className="badge badge-neutral bg-white/90 backdrop-blur-sm border border-[var(--border)] shadow-sm">
+                 {totalAvailable} In Stock
+               </span>
+            ) : (
+              <span className="badge badge-danger shadow-sm">Out of stock</span>
+            )}
           </div>
         </div>
 
         {/* Product details */}
-        <div className="p-5">
-          <div className="flex items-start justify-between mb-1">
-            <h3 className="font-semibold text-base leading-tight">{product.name}</h3>
-          </div>
-          <p className="text-xs text-[var(--muted-foreground)] mb-2 font-mono">
-            {product.sku}
-          </p>
-          {product.description && (
-            <p className="text-sm text-[var(--muted-foreground)] mb-4 line-clamp-2">
-              {product.description}
+        <div className="p-5 flex flex-col flex-grow">
+          <div className="mb-4">
+            <h3 className="font-semibold text-base text-[var(--foreground)] leading-tight mb-1">{product.name}</h3>
+            <p className="text-xs text-[var(--muted-foreground)] font-mono mb-3">
+              {product.sku}
             </p>
-          )}
-
-          <div className="text-xl font-bold gradient-text mb-4">
-            ₹{product.price.toLocaleString("en-IN")}
+            <div className="text-lg font-bold text-[var(--foreground)]">
+              ₹{product.price.toLocaleString("en-IN")}
+            </div>
           </div>
 
-          {/* Stock levels per warehouse */}
-          <div className="space-y-2">
-            <p className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wider">
-              Warehouse Availability
+          <div className="mt-auto space-y-2 pt-4 border-t border-[var(--border)]">
+            <p className="text-[11px] font-semibold text-[var(--muted-foreground)] uppercase tracking-wider mb-2">
+              Warehouses
             </p>
             {product.stockLevels.map((sl) => (
               <div
                 key={sl.warehouseId}
-                className="flex items-center justify-between gap-3 rounded-lg bg-[var(--muted)] p-3 transition-all hover:bg-[var(--muted)]/80"
+                className="flex items-center justify-between text-sm py-1"
               >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">
-                    {sl.warehouseName}
-                  </p>
-                  <p className="text-xs text-[var(--muted-foreground)]">
-                    {sl.availableUnits} of {sl.totalUnits} available
-                    {sl.reservedUnits > 0 && (
-                      <span className="text-amber-400 ml-1">
-                        ({sl.reservedUnits} reserved)
-                      </span>
-                    )}
-                  </p>
+                <div className="flex flex-col">
+                  <span className="font-medium text-[var(--foreground)]">{sl.warehouseName}</span>
+                  <span className="text-xs text-[var(--muted-foreground)]">
+                    {sl.availableUnits} avail {sl.reservedUnits > 0 && `· ${sl.reservedUnits} rsvd`}
+                  </span>
                 </div>
                 <button
                   onClick={() => setSelectedStock(sl)}
                   disabled={sl.availableUnits <= 0}
-                  className="btn btn-primary text-xs !px-3 !py-1.5"
+                  className="btn btn-outline text-xs !px-3 !py-1 h-8"
                 >
                   Reserve
                 </button>

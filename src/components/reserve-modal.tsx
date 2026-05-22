@@ -69,118 +69,115 @@ export function ReserveModal({ product, stockLevel, onClose }: ReserveModalProps
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold">Reserve Stock</h2>
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-lg font-bold text-[var(--foreground)]">Hold Inventory</h2>
           <button
             onClick={onClose}
-            className="text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors text-lg"
+            className="p-1 rounded-md text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
           >
-            ✕
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
           </button>
         </div>
 
-        <div className="space-y-5">
-          {/* Product info */}
-          <div className="glass-card p-4" style={{ transform: 'none' }}>
-            <p className="font-semibold text-base">{product.name}</p>
-            <p className="text-sm text-[var(--muted-foreground)] mt-1">
-              SKU: {product.sku}
-            </p>
-            <p className="text-sm text-[var(--muted-foreground)] mt-0.5">
-              Warehouse: {stockLevel.warehouseName}
-            </p>
-            <div className="flex items-center justify-between mt-3">
-              <span className="text-lg font-bold gradient-text">
-                ₹{product.price.toLocaleString("en-IN")}
+        <div className="space-y-6">
+          {/* Product Summary Box */}
+          <div className="bg-[var(--muted)] rounded-lg p-4 border border-[var(--border)]">
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <p className="font-semibold text-sm text-[var(--foreground)]">{product.name}</p>
+                <p className="text-xs text-[var(--muted-foreground)] font-mono mt-0.5">{product.sku}</p>
+              </div>
+              <p className="font-medium text-sm">₹{product.price.toLocaleString("en-IN")}</p>
+            </div>
+            <div className="pt-3 mt-3 border-t border-[var(--border)] flex justify-between items-center text-sm">
+              <span className="text-[var(--muted-foreground)] flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                {stockLevel.warehouseName}
               </span>
-              <span className="badge badge-success">
-                {stockLevel.availableUnits} available
+              <span className="badge badge-success bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm">
+                {stockLevel.availableUnits} left
               </span>
             </div>
           </div>
 
-          {/* Quantity */}
-          <div>
-            <label className="block text-sm font-medium mb-2 text-[var(--muted-foreground)]">
-              Quantity
-            </label>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="btn btn-ghost h-10 w-10 !p-0"
-                disabled={quantity <= 1}
-              >
-                −
-              </button>
-              <input
-                type="number"
-                min={1}
-                max={stockLevel.availableUnits}
-                value={quantity}
-                onChange={(e) =>
-                  setQuantity(
-                    Math.min(
-                      Math.max(1, parseInt(e.target.value) || 1),
-                      stockLevel.availableUnits
+          <div className="space-y-4">
+            {/* Quantity */}
+            <div>
+              <label className="block text-sm font-medium mb-1.5 text-[var(--foreground)]">
+                Quantity
+              </label>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="btn btn-outline h-10 w-10 !p-0 font-bold"
+                  disabled={quantity <= 1}
+                >
+                  −
+                </button>
+                <input
+                  type="number"
+                  min={1}
+                  max={stockLevel.availableUnits}
+                  value={quantity}
+                  onChange={(e) =>
+                    setQuantity(
+                      Math.min(
+                        Math.max(1, parseInt(e.target.value) || 1),
+                        stockLevel.availableUnits
+                      )
                     )
-                  )
-                }
-                className="input w-20 text-center"
+                  }
+                  className="input flex-1 text-center font-medium"
+                />
+                <button
+                  onClick={() =>
+                    setQuantity(Math.min(quantity + 1, stockLevel.availableUnits))
+                  }
+                  className="btn btn-outline h-10 w-10 !p-0 font-bold"
+                  disabled={quantity >= stockLevel.availableUnits}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium mb-1.5 text-[var(--foreground)]">
+                Customer Email <span className="font-normal text-[var(--muted-foreground)]">(Optional)</span>
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="customer@example.com"
+                className="input"
               />
-              <button
-                onClick={() =>
-                  setQuantity(Math.min(quantity + 1, stockLevel.availableUnits))
-                }
-                className="btn btn-ghost h-10 w-10 !p-0"
-                disabled={quantity >= stockLevel.availableUnits}
-              >
-                +
-              </button>
             </div>
           </div>
 
-          {/* Email (optional) */}
-          <div>
-            <label className="block text-sm font-medium mb-2 text-[var(--muted-foreground)]">
-              Email <span className="text-xs">(optional)</span>
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="customer@example.com"
-              className="input"
-            />
-          </div>
-
-          {/* Total */}
-          <div className="flex items-center justify-between py-3 border-t border-[var(--border)]">
-            <span className="text-[var(--muted-foreground)]">Total</span>
-            <span className="text-xl font-bold">
-              ₹{(product.price * quantity).toLocaleString("en-IN")}
-            </span>
-          </div>
-
-          {/* Info note */}
-          <div className="flex items-start gap-2 rounded-lg bg-violet-950/30 border border-violet-800/20 p-3">
-            <span className="text-violet-400 text-sm mt-0.5">ℹ</span>
-            <p className="text-xs text-violet-300/80">
-              Stock will be reserved for 10 minutes. You can confirm your purchase
-              or cancel anytime during this window.
+          <div className="flex items-start gap-2.5 bg-blue-50 text-blue-800 p-3 rounded-lg border border-blue-100">
+            <svg className="w-5 h-5 flex-shrink-0 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-xs leading-relaxed">
+              This inventory will be reserved exclusively for you for <strong>10 minutes</strong>. Other shoppers won't be able to purchase it during this window.
             </p>
           </div>
 
-          {/* Actions */}
-          <div className="flex gap-3">
-            <button onClick={onClose} className="btn btn-ghost flex-1">
-              Cancel
-            </button>
+          <div className="pt-2">
             <button
               onClick={handleReserve}
               disabled={loading || quantity < 1 || quantity > stockLevel.availableUnits}
-              className="btn btn-primary flex-1"
+              className="btn btn-primary w-full py-3 h-12 shadow-sm text-sm"
             >
               {loading ? (
                 <span className="flex items-center gap-2">
@@ -191,7 +188,7 @@ export function ReserveModal({ product, stockLevel, onClose }: ReserveModalProps
                   Reserving...
                 </span>
               ) : (
-                "Reserve Now"
+                `Reserve ${quantity} unit${quantity > 1 ? 's' : ''} • ₹${(product.price * quantity).toLocaleString("en-IN")}`
               )}
             </button>
           </div>
