@@ -70,9 +70,8 @@ body::after {
 }
 
 .page-container {
-  max-width: 80rem;
-  margin: 0 auto;
-  padding: 3rem 2rem;
+  width: 100%;
+  padding: 3rem 0;
 }
 
 /* Premium Frosted Glass Cards */

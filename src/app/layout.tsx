@@ -23,7 +23,7 @@ export default function RootLayout({
       </head>
       <body className="bg-grid-pattern min-h-screen">
         <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[#09090b]/90 backdrop-blur-xl">
-          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+          <div className="flex h-16 w-full items-center justify-between px-6 md:px-12 2xl:px-24">
             <a href="/" className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-violet-500">
                 <svg
@@ -53,7 +53,7 @@ export default function RootLayout({
             </nav>
           </div>
         </header>
-        <main className="mx-auto max-w-7xl px-6 py-8">{children}</main>
+        <main className="w-full px-6 md:px-12 2xl:px-24 py-8">{children}</main>
       </body>
     </html>
   );
