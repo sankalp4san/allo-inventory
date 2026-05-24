@@ -116,7 +116,7 @@ function CheckoutContent({ id }: { id: string }) {
 
   if (loading) {
     return (
-      <div className="max-w-xl mx-auto space-y-6 pt-16 relative z-10 px-4">
+      <div className="max-w-2xl mx-auto space-y-6 pt-16 relative z-10 px-4">
         <div className="h-6 w-32 skeleton mb-8" />
         <div className="clean-card p-8 border border-[var(--border)]">
           <div className="space-y-6">
@@ -132,7 +132,7 @@ function CheckoutContent({ id }: { id: string }) {
 
   if (!reservation) {
     return (
-      <div className="max-w-xl mx-auto text-center py-32 relative z-10 px-4">
+      <div className="max-w-2xl mx-auto text-center py-32 relative z-10 px-4">
         <div className="w-20 h-20 bg-[var(--muted)]/50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
           <svg className="w-10 h-10 text-[var(--muted-foreground)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -155,7 +155,7 @@ function CheckoutContent({ id }: { id: string }) {
   const isFinalExpired = reservation.status === "EXPIRED" || isExpired;
 
   return (
-    <div className="max-w-xl mx-auto py-12 px-4 relative z-10">
+    <div className="max-w-2xl mx-auto py-12 px-4 relative z-10">
       <button
         onClick={() => router.push("/")}
         className="flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-white transition-colors mb-8 font-semibold tracking-wide uppercase"
