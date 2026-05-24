@@ -3,14 +3,15 @@
 This is the submission for the Allo Engineering take-home exercise. It implements a concurrency-safe inventory reservation system for a multi-warehouse retail platform.
 
 ## 🚀 Live Demo
-- **App URL**: [To be added upon deployment]
-- **Hosted Database**: [To be added upon deployment]
+- **App URL**: [https://allo-inventory-d5lf.vercel.app/](https://allo-inventory-d5lf.vercel.app/)
+- **Hosted Database**: Neon Serverless PostgreSQL
+- **Distributed Cache**: Upstash Redis (For Idempotency)
 
 ## 🛠️ Stack
 - **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript (End-to-End)
 - **Database**: PostgreSQL via Prisma ORM
-- **Styling**: Tailwind CSS + Custom CSS (for a premium UI)
+- **Styling**: Tailwind CSS + Custom CSS (Premium UI with Glassmorphism)
 - **Validation**: Zod (Shared between API and frontend)
 
 ## 🏃‍♂️ How to Run Locally
@@ -33,7 +34,7 @@ This is the submission for the Allo Engineering take-home exercise. It implement
    Push the schema to the database and seed it with initial data (Products, Warehouses, Stock Levels):
    ```bash
    npx prisma db push
-   npm run seed
+   npm run db:seed
    ```
 
 4. **Run the Development Server**
