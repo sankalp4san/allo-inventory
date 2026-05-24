@@ -15,18 +15,42 @@ function CheckoutContent({ id }: { id: string }) {
   const { addToast } = useToast();
 
   useEffect(() => {
-    // We don't have a GET endpoint for single reservation,
-    // so we'll store reservation data in sessionStorage after creation
-    const stored = sessionStorage.getItem(`reservation-${id}`);
-    if (stored) {
-      const data = JSON.parse(stored) as ReservationResponse;
-      setReservation(data);
-      // Check if already expired on load
-      if (new Date(data.expiresAt) < new Date()) {
-        setIsExpired(true);
+    const fetchReservation = async () => {
+      try {
+        // Try to load from API first (works on page refresh / direct URL)
+        const res = await fetch(`/api/reservations/${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setReservation(data.reservation);
+          sessionStorage.setItem(`reservation-${id}`, JSON.stringify(data.reservation));
+          if (new Date(data.reservation.expiresAt) < new Date() && data.reservation.status === "PENDING") {
+            setIsExpired(true);
+          }
+        } else {
+          // Fallback to sessionStorage cache
+          const stored = sessionStorage.getItem(`reservation-${id}`);
+          if (stored) {
+            const data = JSON.parse(stored) as ReservationResponse;
+            setReservation(data);
+            if (new Date(data.expiresAt) < new Date()) {
+              setIsExpired(true);
+            }
+          }
+        }
+      } catch {
+        // Network error — try sessionStorage
+        const stored = sessionStorage.getItem(`reservation-${id}`);
+        if (stored) {
+          const data = JSON.parse(stored) as ReservationResponse;
+          setReservation(data);
+          if (new Date(data.expiresAt) < new Date()) {
+            setIsExpired(true);
+          }
+        }
       }
-    }
-    setLoading(false);
+      setLoading(false);
+    };
+    fetchReservation();
   }, [id]);
 
   const handleConfirm = useCallback(async () => {
