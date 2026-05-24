@@ -64,26 +64,28 @@ export function ProductCard({ product }: ProductCardProps) {
             <p className="text-[10px] font-bold text-[var(--muted-foreground)] uppercase tracking-widest mb-3">
               Fulfillment Centers
             </p>
-            {product.stockLevels.map((sl) => (
-              <div
-                key={sl.warehouseId}
-                className="flex items-center justify-between py-2 px-3 rounded-lg bg-[var(--muted)]/30 border border-[var(--border)]/50 transition-colors hover:bg-[var(--muted)]/50"
-              >
-                <div className="flex flex-col">
-                  <span className="font-semibold text-sm text-white">{sl.warehouseName}</span>
-                  <span className="text-xs text-[var(--muted-foreground)] mt-0.5">
-                    {sl.availableUnits} avail {sl.reservedUnits > 0 && `· ${sl.reservedUnits} hold`}
-                  </span>
-                </div>
-                <button
-                  onClick={() => setSelectedStock(sl)}
-                  disabled={sl.availableUnits <= 0}
-                  className="btn btn-primary text-xs !px-4 !py-2 h-9 shadow-lg"
+            <div className="flex flex-col gap-2 h-[160px] overflow-y-auto pr-1">
+              {product.stockLevels.map((sl) => (
+                <div
+                  key={sl.warehouseId}
+                  className="flex items-center justify-between py-2 px-3 rounded-lg bg-[var(--muted)]/30 border border-[var(--border)]/50 transition-colors hover:bg-[var(--muted)]/50"
                 >
-                  Hold
-                </button>
-              </div>
-            ))}
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-sm text-white">{sl.warehouseName}</span>
+                    <span className="text-xs text-[var(--muted-foreground)] mt-0.5">
+                      {sl.availableUnits} avail {sl.reservedUnits > 0 && `· ${sl.reservedUnits} hold`}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setSelectedStock(sl)}
+                    disabled={sl.availableUnits <= 0}
+                    className="btn btn-primary text-xs !px-4 !py-2 h-9 shadow-lg"
+                  >
+                    Hold
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

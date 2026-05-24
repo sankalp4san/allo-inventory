@@ -22,7 +22,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-grid-pattern min-h-screen">
-        <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-xl">
+        <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[#09090b]/90 backdrop-blur-xl">
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
             <a href="/" className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-violet-500">
