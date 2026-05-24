@@ -1,11 +1,8 @@
 {
-  "github": {
-    "silent": true
-  },
   "crons": [
     {
       "path": "/api/cron/expire-reservations",
-      "schedule": "* * * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
